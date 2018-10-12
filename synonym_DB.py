@@ -9,8 +9,7 @@ import copy
 import numpy as np
 import pandas as pd
 import pickle
-
-
+from collections import Counter
 
 
 class synonym_DB(object):
@@ -30,6 +29,7 @@ class synonym_DB(object):
         :return:
         """
         # 不同的语料，建立的方式应该不一样
+        word_cnt = Counter()
         # 载入哈工大同义词林(gbk格式）
         with open(input_path, 'r', encoding=encoding) as fin:
             for line in fin:    # 读取一行
@@ -37,9 +37,13 @@ class synonym_DB(object):
                 match_obj = re.match(r'[\w]+([=@#]) (.*)', line)
                 token = match_obj.group(1)  # 符号
                 line = match_obj.group(2)   # 同义词组
+                # print(line)
                 if token !='=': continue
                 # 区分出主词 和 其他词
                 words = line.split()
+                # 临时统计词频
+                # for word in words:
+                #     word_cnt[word] += 1
                 main_word = words[0]    # 同义词统一映射为该词
                 words = words[1:]   # 其他同义词
 
@@ -63,6 +67,10 @@ class synonym_DB(object):
         # 计算idx2word
         for word, idx in self._word2idx.items():
             self._idx2word[idx] = word
+        # 临时显示词频
+        # for k, v in word_cnt.items():
+        #     if v > 1:
+        #         print((k, v))
 
     def load_DB(self, input_path):
         """载入同义词库"""
