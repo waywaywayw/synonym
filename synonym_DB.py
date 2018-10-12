@@ -108,6 +108,3 @@ class synonym_DB(object):
             else:
                 return False
 
-
-if __name__ == "__main__":
-    pass
