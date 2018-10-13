@@ -10,7 +10,7 @@ import numpy as np
 import pandas as pd
 import pickle
 
-from synonym_DB import synonym_DB
+from synonym import synonym_DB
 
 
 def main():
@@ -20,10 +20,12 @@ def main():
 
     # 载入/建立 同义词库
     if os.path.exists(synonym_DB_path):
+        print('载入 同义词库完毕..')
         syn.load_DB(synonym_DB_path)
     else:
-        syn.build_DB(os.path.join('synonym_set', '哈工大信息检索研究中心同义词词林扩展版.txt'))
+        syn.build_DB(os.path.join('synonym_data', '哈工大信息检索研究中心同义词词林扩展版.txt'))
         syn.save_DB(synonym_DB_path)
+        print('建立并保存 同义词库完毕..')
 
     # test
     test_word = ['开心', '人才', '啥', '拜倒']
