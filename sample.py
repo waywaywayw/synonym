@@ -10,25 +10,28 @@ import numpy as np
 import pandas as pd
 import pickle
 
-from synonym import synonym_DB
+from synonym import Synonym
 
 
 def main():
-    synonym_DB_name = 'synonym.pkl'
-    synonym_DB_path = os.path.join('output', synonym_DB_name)
-    syn = synonym_DB()
+    # 定义同义词库的存放路径
+    synonym_file_path = os.path.join('output',  'synonym.pkl')
+    if not os.path.exists('output'):
+        os.makedirs('output')
 
     # 载入/建立 同义词库
-    if os.path.exists(synonym_DB_path):
-        print('载入 同义词库完毕..')
-        syn.load_DB(synonym_DB_path)
+    syn = Synonym()
+    if os.path.exists(synonym_file_path):
+        syn.load(synonym_file_path)
+        print('载入同义词库完毕。共有{}组同义词\n'.format(len(syn.word2idx)))
     else:
-        syn.build_DB(os.path.join('synonym_data', '哈工大信息检索研究中心同义词词林扩展版.txt'))
-        syn.save_DB(synonym_DB_path)
-        print('建立并保存 同义词库完毕..')
+        syn.add_synonym(os.path.join('synonym_data', '哈工大同义词林.txt'))
+        print('添加同义词表 完毕。目前共有{}组同义词'.format(len(syn.word2idx)))
+        syn.save(synonym_file_path)
+        print('保存同义词库完毕。\n')
 
     # test
-    test_word = ['开心', '人才', '啥', '拜倒']
+    test_word = ['开心', '系统', '啥', '拜倒']
     for word in test_word:
         print('{}的同义词是 {}'.format(word, syn.query_synonym(word)))
 
