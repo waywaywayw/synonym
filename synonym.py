@@ -28,36 +28,32 @@ class Synonym(object):
                 main_word = words[0]    # 同义词统一映射为该词
                 words = words[1:]   # 其他同义词
 
-                # 添加进字典和并查集
-                # 先添加主词
-                if main_word not in self._word2idx.keys():  # main_word还不在字典中的情况
-                    current_id = len(self._union_find)
-                    self._word2idx[main_word] = current_id  # 添加进字典
-                    main_id = current_id
-                    self._union_find.append(main_id)    # main_word在并查集中的id为main_id
-                else:
-                    main_id = self._word2idx[main_word] # 如果main_word已经在词典中，直接取出对应id
+                # 先添加主词（主词的标志：self._union_find[id] == id）
+                if main_word not in self._word2idx.keys():  # main_word还不在字典中
+                    main_id = len(self._union_find)
+                    self._word2idx[main_word] = main_id  # 添加 main_word 进字典
+                    self._union_find.append(main_id)  # main_word在并查集中的id为main_id
+                else: # main_word已经在词典中
+                    main_id = self._word2idx[main_word]  # 直接取出main_word对应的id
+                    if self._union_find[main_id] != main_id: # 如果main_word不是主词
+                        self._union_find[main_id] = main_id  # 设置main_word为主词
                 # 再添加其他词
                 for word in words:
                     if word not in self._word2idx.keys():
-                        current_id = len(self._union_find)
-                        self._word2idx[word] = current_id  # 添加进字典
+                        word_id = len(self._union_find)
+                        self._word2idx[word] = word_id  # 添加 word 进字典
                         self._union_find.append(main_id)  # 其他同义词在并查集中的id为main_id
                     else:
                         pass    # 已经存在了。就不管了。。（暂时）
         # 计算 idx2word
         self._get_idx2word()
-        # 临时显示词频
-        # for k, v in word_cnt.items():
-        #     if v > 1:
-        #         print((k, v))
 
     def load(self, input_path):
         """载入同义词库"""
         with open(input_path, 'rb') as fin:
             obj = pickle.load(fin)
-            self._union_find = obj._union_find
-            self._word2idx = obj._word2idx
+            self._union_find = obj.union_find
+            self._word2idx = obj.word2idx
         self._get_idx2word()
 
     def save(self, save_path):

@@ -31,7 +31,7 @@ def main():
         print('保存同义词库完毕。\n')
 
     # test
-    test_word = ['开心', '系统', '啥', '拜倒']
+    test_word = ['开心', '系统', '啥', '拜倒', '是']
     for word in test_word:
         print('{}的同义词是 {}'.format(word, syn.query_synonym(word)))
 
